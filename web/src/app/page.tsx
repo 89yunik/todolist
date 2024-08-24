@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { addTodo, removeTodo } from "../../../shared/todoLogic"
+import { addTodo, removeTodo } from "@/../../shared/todoLogic"
 
 export default function Home() {
   const [todos, setTodos] = useState<Map<string, string>>(new Map())
