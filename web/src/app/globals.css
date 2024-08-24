@@ -2,32 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+#app-container {
+  @apply max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+#app-name {
+  @apply text-center text-3xl font-bold mb-6;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+#add-todo-container {
+  @apply flex space-x-4 mb-6;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+#todo-list-input {
+  @apply flex-1 p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-400;
+}
+
+#todo-add-button {
+  @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600;
+}
+
+.todo-item {
+  @apply p-2 flex space-x-4 justify-between items-center;
+}
+
+.todo-remove-button {
+  @apply px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700;
 }
