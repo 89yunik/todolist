@@ -14,6 +14,10 @@ export default function Home() {
     setInput("")
   }
 
+  const handleRemoveTodo = (id: string) => {
+    setTodos(removeTodo(todos, id))
+  }
+
   return (
     <div id="app-container">
       <h1 id="app-name">Todo List</h1>
@@ -27,6 +31,9 @@ export default function Home() {
         {Array.from(todos).map(([todoId, todoText]) => (
           <li key={todoId} className="todo-item">
             <span>{todoText}</span>
+            <button className="todo-remove-button" onClick={() => handleRemoveTodo(todoId)}>
+              Delete
+            </button>
           </li>
         ))}
       </ul>
