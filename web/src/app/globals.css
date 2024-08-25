@@ -26,6 +26,10 @@
   @apply p-2 flex space-x-4 justify-between items-center;
 }
 
+.todo-text {
+  @apply w-3/4 break-words;
+}
+
 .todo-remove-button {
   @apply px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700;
 }

@@ -30,7 +30,7 @@ export default function Home() {
       <ul id="todo-list">
         {Array.from(todos).map(([todoId, todoText]) => (
           <li key={todoId} className="todo-item">
-            <span>{todoText}</span>
+            <span className="todo-text">{todoText}</span>
             <button className="todo-remove-button" onClick={() => handleRemoveTodo(todoId)}>
               Delete
             </button>
