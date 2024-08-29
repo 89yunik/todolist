@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#app-container {
+  @apply max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg;
+}
+
+#app-name {
+  @apply text-center text-3xl font-bold mb-6;
+}
+
+#add-todo-container {
+  @apply flex justify-between mb-6;
+}
+
+.todo-input {
+  @apply w-3/5 p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-400;
+}
+
+#add-todo-input {
+  @apply w-3/4;
+}
+/* 
+#todo-add-button {
+  @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600;
+} */
+
+.todo-item {
+  @apply flex justify-between items-center mb-4;
+}
+
+.todo-text {
+  @apply w-3/5 break-words;
+}
+
+.todo-crud-button {
+  @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600;
+}
