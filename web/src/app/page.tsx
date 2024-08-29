@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { addTodo, removeTodo } from "@/../../shared/todoLogic"
 
 export default function Home() {
   const [todos, setTodos] = useState<Map<string, string>>(new Map())
@@ -15,7 +14,9 @@ export default function Home() {
       id = Date.now().toString()
       setAddTodoInput("")
     }
-    setTodos(addTodo(todos, id, todoText))
+    const newTodos = new Map(todos)
+    newTodos.set(id, todoText)
+    setTodos(newTodos)
   }
 
   const handleEditTodo = (id: string, rawText: string, updatedText: string) => {
@@ -29,7 +30,9 @@ export default function Home() {
   }
 
   const handleRemoveTodo = (id: string) => {
-    setTodos(removeTodo(todos, id))
+    const newTodos = new Map(todos)
+    newTodos.delete(id)
+    setTodos(newTodos)
   }
 
   return (
