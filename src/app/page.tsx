@@ -1,9 +1,13 @@
 "use client"
 
+interface Todo {
+  [key: string]: string
+}
+
 import { useState } from "react"
 
 export default function Home() {
-  const [todos, setTodos] = useState<Map<string, string>>(new Map())
+  const [todos, setTodos] = useState<Todo>()
   const [addTodoInput, setAddTodoInput] = useState<string>("")
   const [updateTodoInput, setUpdateTodoInput] = useState<string>("")
   const [editId, setEditId] = useState<string>("")
@@ -14,8 +18,7 @@ export default function Home() {
       id = Date.now().toString()
       setAddTodoInput("")
     }
-    const newTodos = new Map(todos)
-    newTodos.set(id, todoText)
+    const newTodos: Todo = { ...todos, id: todoText }
     setTodos(newTodos)
   }
 
@@ -30,8 +33,7 @@ export default function Home() {
   }
 
   const handleRemoveTodo = (id: string) => {
-    const newTodos = new Map(todos)
-    newTodos.delete(id)
+    const { [id]: _, ...newTodos } = todos as Todo
     setTodos(newTodos)
   }
 
@@ -45,17 +47,19 @@ export default function Home() {
         </button>
       </div>
       <ul id="todo-list">
-        {Array.from(todos).map(([todoId, todoText]) => (
-          <li key={todoId} className="todo-item">
-            {editId == todoId ? <input className="todo-input" value={updateTodoInput} onChange={(e) => setUpdateTodoInput(e.target.value)}></input> : <span className="todo-text">{todoText}</span>}
-            <button className="todo-crud-button" onClick={() => handleEditTodo(todoId, todoText, updateTodoInput)}>
-              Update
-            </button>
-            <button className="todo-crud-button" onClick={() => handleRemoveTodo(todoId)}>
-              Delete
-            </button>
-          </li>
-        ))}
+        {todos
+          ? Object.entries(todos).map(([todoId, todoText]) => (
+              <li key={todoId} className="todo-item">
+                {editId == todoId ? <input className="todo-input" value={updateTodoInput} onChange={(e) => setUpdateTodoInput(e.target.value)}></input> : <span className="todo-text">{todoText}</span>}
+                <button className="todo-crud-button" onClick={() => handleEditTodo(todoId, todoText, updateTodoInput)}>
+                  Update
+                </button>
+                <button className="todo-crud-button" onClick={() => handleRemoveTodo(todoId)}>
+                  Delete
+                </button>
+              </li>
+            ))
+          : ""}
       </ul>
     </div>
   )
