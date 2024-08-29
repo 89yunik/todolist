@@ -27,7 +27,7 @@
 } */
 
 .todo-item {
-  @apply flex justify-between items-center;
+  @apply flex justify-between items-center mb-4;
 }
 
 .todo-text {

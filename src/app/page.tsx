@@ -1,10 +1,10 @@
 "use client"
 
 interface Todo {
-  [key: string]: string
+  [id: string]: string
 }
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export default function Home() {
   const [todos, setTodos] = useState<Todo>()
@@ -12,14 +12,21 @@ export default function Home() {
   const [updateTodoInput, setUpdateTodoInput] = useState<string>("")
   const [editId, setEditId] = useState<string>("")
 
+  useEffect(() => {
+    const savedTodos = localStorage.getItem("todos")
+    if (savedTodos) setTodos(JSON.parse(savedTodos))
+  }, [])
+
   const handleAddTodo = (todoText: string, id: string = "") => {
     if (todoText.trim() === "") return
     if (!id) {
       id = Date.now().toString()
       setAddTodoInput("")
     }
-    const newTodos: Todo = { ...todos, id: todoText }
+    const newTodos: Todo = { ...todos, [id]: todoText }
     setTodos(newTodos)
+    const jsonTodos = JSON.stringify(newTodos)
+    localStorage.setItem("todos", jsonTodos)
   }
 
   const handleEditTodo = (id: string, rawText: string, updatedText: string) => {
@@ -35,6 +42,7 @@ export default function Home() {
   const handleRemoveTodo = (id: string) => {
     const { [id]: _, ...newTodos } = todos as Todo
     setTodos(newTodos)
+    localStorage.setItem("todos", JSON.stringify(newTodos))
   }
 
   return (
