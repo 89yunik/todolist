@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  basePath: "/todolist",
+  assetPrefix: "/todolist/",
+}
 
-export default nextConfig;
+export default nextConfig
