@@ -1,38 +1,75 @@
 "use client"
 
-interface Todo {
-  [id: string]: string
-}
-
 import { useEffect, useState } from "react"
+import { TodoItem, TodoList } from "./types"
 
 export default function Home() {
-  const [todos, setTodos] = useState<Todo>()
+  const [todos, setTodos] = useState<TodoList>([])
   const [addTodoInput, setAddTodoInput] = useState<string>("")
   const [updateTodoInput, setUpdateTodoInput] = useState<string>("")
   const [editId, setEditId] = useState<string>("")
 
   useEffect(() => {
     const savedTodos = localStorage.getItem("todos")
-    if (savedTodos) setTodos(JSON.parse(savedTodos))
+    if (savedTodos) {
+      try {
+        const parsedTodos = JSON.parse(savedTodos)
+        setTodos(
+          parsedTodos.map((todo: TodoItem) => ({
+            ...todo,
+            createdAt: new Date(todo.createdAt),
+            updatedAt: new Date(todo.updatedAt),
+          }))
+        )
+      } catch (error) {
+        console.error("Failed to parse todos from localStorage:", error)
+        setTodos([])
+      }
+    }
   }, [])
 
-  const handleAddTodo = (todoText: string, id: string = "") => {
+  const handleAddTodo = (todoText: string, existingId?: string) => {
     if (todoText.trim() === "") return
-    if (!id) {
-      id = Date.now().toString()
+
+    const now = new Date()
+
+    if (existingId) {
+      // 기존 todo 업데이트
+      setTodos((prevTodos) => prevTodos.map((todo) => (todo.id === existingId ? { ...todo, text: todoText, updatedAt: now } : todo)))
+    } else {
+      // 새 todo 추가
+      const newTodo: TodoItem = {
+        id: Date.now().toString(),
+        text: todoText,
+        completed: false,
+        createdAt: now,
+        updatedAt: now,
+      }
+      setTodos((prevTodos) => [...prevTodos, newTodo])
       setAddTodoInput("")
     }
-    const newTodos: Todo = { ...todos, [id]: todoText }
-    setTodos(newTodos)
-    const jsonTodos = JSON.stringify(newTodos)
-    localStorage.setItem("todos", jsonTodos)
+
+    // localStorage에 저장
+    const updatedTodos = existingId
+      ? todos.map((todo) => (todo.id === existingId ? { ...todo, text: todoText, updatedAt: now } : todo))
+      : [
+          ...todos,
+          {
+            id: existingId || Date.now().toString(),
+            text: todoText,
+            completed: false,
+            createdAt: now,
+            updatedAt: now,
+          },
+        ]
+
+    localStorage.setItem("todos", JSON.stringify(updatedTodos))
   }
 
-  const handleEditTodo = (id: string, rawText: string, updatedText: string) => {
+  const handleEditTodo = (id: string, currentText: string, updatedText: string) => {
     if (!editId) {
       setEditId(id)
-      setUpdateTodoInput(rawText)
+      setUpdateTodoInput(currentText)
     } else {
       setEditId("")
       handleAddTodo(updatedText, id)
@@ -40,9 +77,15 @@ export default function Home() {
   }
 
   const handleRemoveTodo = (id: string) => {
-    const { [id]: _, ...newTodos } = todos as Todo
+    const newTodos = todos.filter((todo) => todo.id !== id)
     setTodos(newTodos)
     localStorage.setItem("todos", JSON.stringify(newTodos))
+  }
+
+  const handleToggleComplete = (id: string) => {
+    const updatedTodos = todos.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed, updatedAt: new Date() } : todo))
+    setTodos(updatedTodos)
+    localStorage.setItem("todos", JSON.stringify(updatedTodos))
   }
 
   return (
@@ -54,20 +97,33 @@ export default function Home() {
           Add Todo
         </button>
       </div>
+
       <ul id="todo-list">
-        {todos
-          ? Object.entries(todos).map(([todoId, todoText]) => (
-              <li key={todoId} className="todo-item">
-                {editId == todoId ? <input className="todo-input" value={updateTodoInput} onChange={(e) => setUpdateTodoInput(e.target.value)}></input> : <span className="todo-text">{todoText}</span>}
-                <button className="todo-crud-button" onClick={() => handleEditTodo(todoId, todoText, updateTodoInput)}>
-                  Update
-                </button>
-                <button className="todo-crud-button" onClick={() => handleRemoveTodo(todoId)}>
-                  Delete
-                </button>
-              </li>
-            ))
-          : ""}
+        {todos.length > 0 ? (
+          todos.map((todo) => (
+            <li key={todo.id} className="todo-item">
+              <input type="checkbox" checked={todo.completed} onChange={() => handleToggleComplete(todo.id)} className="todo-checkbox" />
+
+              {editId === todo.id ? (
+                <input className="todo-input" value={updateTodoInput} onChange={(e) => setUpdateTodoInput(e.target.value)} />
+              ) : (
+                <span className={`todo-text ${todo.completed ? "completed" : ""}`} style={{ textDecoration: todo.completed ? "line-through" : "none" }}>
+                  {todo.text}
+                </span>
+              )}
+
+              <button className="todo-crud-button" onClick={() => handleEditTodo(todo.id, todo.text, updateTodoInput)}>
+                {editId === todo.id ? "Save" : "Edit"}
+              </button>
+
+              <button className="todo-crud-button" onClick={() => handleRemoveTodo(todo.id)}>
+                Delete
+              </button>
+            </li>
+          ))
+        ) : (
+          <li className="empty-message"></li>
+        )}
       </ul>
     </div>
   )
