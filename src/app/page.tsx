@@ -8,8 +8,6 @@ import { TodoItemComponent } from "../components/TodoItem"
 export default function Home() {
   const [todos, setTodos] = useState<TodoList>([])
   const [addTodoInput, setAddTodoInput] = useState<string>("")
-  // const [updateTodoInput, setUpdateTodoInput] = useState<string>("")
-  // const [currentEditingId, setEditId] = useState<string>("")
   const [editing, setEditing] = useState<{ id: string; text: string }>({ id: "", text: "" })
 
   useEffect(() => {
