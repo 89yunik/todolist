@@ -21,6 +21,7 @@
 #add-todo-input {
   @apply w-3/4;
 }
+
 /* 
 #todo-add-button {
   @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600;
@@ -36,4 +37,8 @@
 
 .todo-crud-button {
   @apply px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600;
+}
+
+.completed {
+  text-decoration: line-through;
 }
